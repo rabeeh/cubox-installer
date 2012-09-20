@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Copyright (C) 2012 SolidRun ltd. Rabeeh Khoury <rabeeh@solid-run.com>
+# Distributed under the terms of the GNU General Public License v2
+
 TMP=`mktemp`
 TMP1=`mktemp`
 chmod +x $TMP
