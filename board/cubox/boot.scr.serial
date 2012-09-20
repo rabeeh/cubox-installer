@@ -1,0 +1,21 @@
+setenv pre_burn 'echo ========= Burning u-boot ========; sf protect off; sf erase 0 0x00080000'
+setenv post_burn 'resetenv; setenv mmc_started 0; setenv usb_started 0; setenv ide_started 0; setenv version 5.4.4_SR1; saveenv; sf protect on; reset'
+if itest.s $version -eq 5.4.4_SR1; then
+	echo "Seems you already have latest version of u-boot. Skipping"
+else
+	echo "Will check if u-boot exists on USB driver and if allowed to burn it"
+	if fatload usb 0:0 0x00200000 /boot/u-boot.bin; then run pre_burn; sf write 0x00200000 0 0x00080000; run post_burn; fi
+	if fatload usb 0:1 0x00200000 /boot/u-boot.bin; then run pre_burn; sf write 0x00200000 0 0x00080000; run post_burn; fi
+	if ext2load usb 0:0 0x00200000 /boot/u-boot.bin; then run pre_burn; sf write 0x00200000 0 0x00080000; run post_burn; fi
+	if ext2load usb 0:1 0x00200000 /boot/u-boot.bin; then run pre_burn; sf write 0x00200000 0 0x00080000; run post_burn; fi
+fi
+
+echo ======== Setting bootargs ========
+setenv bootargs 'console=ttyS0,115200n8 video=dovefb:lcd0:1920x1080-32@60-edid,lcd1:1024x600-16@60'
+echo ======== Loading kernel and initramfs ========
+ext2load usb 0:0 0x02000000 /boot/uImage
+ext2load usb 0:1 0x02000000 /boot/uImage
+fatload usb 0:0 0x02000000 /boot/uImage
+fatload usb 0:1 0x02000000 /boot/uImage
+echo ======== Booting kernel + initrd ========
+bootm 0x02000000
