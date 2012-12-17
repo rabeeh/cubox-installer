@@ -12,7 +12,7 @@ chmod +x $TMP
 ###########################################################
 function get_distro_list {
 	\rm -rf dist.list
-	wget -N http://dl.dropbox.com/u/72661517/CuBox/installer/dist.list
+	wget -N http://download.solid-run.com/pub/solidrun/cubox/installer/dist.list
 	cat dist.list | grep -v "#" > $TMP
 	num=0
 	while IFS=$'\t' read -r -a myArray; do
@@ -171,7 +171,7 @@ function main_menu {
 	else
 		MSG="Please choose action (IP addr $IP_ADDR)"
 	fi
-	dialog --menu "$MSG" 40 120 120 "1" "Obtain IP address from DHCP (on wired network)" "2" "Run the installer" "3" "Quit" 2> $TMP
+	dialog --menu "$MSG" 40 120 120 "1" "Obtain IP address from DHCP (on wired network)" "2" "Run the installer" "3" "Exit to shell" "4" "Reboot (remove USB stick first)" 2> $TMP
 	CHOICE=`cat $TMP`
 	if [ $CHOICE == "1" ]; then
 		udhcpc -f -t 5 -n -q -S
@@ -193,6 +193,10 @@ function main_menu {
 	fi
 	if [ $CHOICE == "3" ]; then
 		exit
+	fi
+	if [ $CHOICE == "4" ]; then
+		# Is this dangerous? Maybe we should first check mounted volumes?
+		reboot -f now
 	fi
 }
 
