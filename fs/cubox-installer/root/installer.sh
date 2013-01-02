@@ -150,11 +150,11 @@ function umount_partition {
 
 # Gets ntp date from network
 function get_ntpdate {
-	dialog --yesno "Update clock from the internet (clock.redhat.com)?" 40 120
+	dialog --yesno "Update clock from the internet (pool.ntp.org)?" 40 120
 	CONT=$?
 	if [ $CONT -eq 0 ]; then
 		killall -q ntpd
-		ntpdate clock.redhat.com
+		ntpdate pool.ntp.org
 		hwclock -w
 	fi
 }
