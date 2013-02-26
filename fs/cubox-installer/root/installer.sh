@@ -171,7 +171,7 @@ function main_menu {
 	else
 		MSG="Please choose action (IP addr $IP_ADDR)"
 	fi
-	dialog --menu "$MSG" 40 120 120 "1" "Obtain IP address from DHCP (on wired network)" "2" "Run the installer" "3" "Exit to shell" "4" "Reboot (remove USB stick first)" 2> $TMP
+	dialog --menu "$MSG" 40 120 120 "1" "Obtain IP address from DHCP (on wired network)" "2" "Run the installer" "3" "Run installation script" "4" "Exit to shell" "5" "Reboot (remove USB stick first)" 2> $TMP
 	CHOICE=`cat $TMP`
 	if [ $CHOICE == "1" ]; then
 		udhcpc -f -t 5 -n -q -S
@@ -192,10 +192,22 @@ function main_menu {
 		echo timer > /sys/class/leds/cubox\:red\:health/trigger
 	fi
 	if [ $CHOICE == "3" ]; then
+		get_destination
+		dialog --inputbox "What is the local path of the script?" 40 120 2> $TMP
+		SCR_TO_SOURCE=`cat $TMP`
+		echo "Script to source $SCR_TO_SOURCE"
+		source $SCR_TO_SOURCE
+		sync
+		# If we are here. It means we are done. Start blinking the front LED
+		echo timer > /sys/class/leds/cubox\:red\:health/trigger
+	fi
+
+	if [ $CHOICE == "4" ]; then
 		exit
 	fi
-	if [ $CHOICE == "4" ]; then
+	if [ $CHOICE == "5" ]; then
 		# Is this dangerous? Maybe we should first check mounted volumes?
+		sync
 		reboot -f now
 	fi
 }
