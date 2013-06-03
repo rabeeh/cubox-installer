@@ -12,7 +12,7 @@ chmod +x $TMP
 ###########################################################
 function get_distro_list {
 	\rm -rf dist.list
-	wget -N http://download.solid-run.com/pub/solidrun/cubox/installer/dist.list
+	wget -N --no-check-certificate https://raw.github.com/rabeeh/cubox-installer-scripts/master/dist.list
 	cat dist.list | grep -v "#" > $TMP
 	num=0
 	while IFS=$'\t' read -r -a myArray; do
@@ -184,7 +184,7 @@ function main_menu {
 	if [ $CHOICE == "2" ]; then
 		get_destination
 		get_distro_list
-		wget -N ${VAR2[$PKG_IDX]}
+		wget -N --no-check-certificate ${VAR2[$PKG_IDX]}
 		SCR_TO_SOURCE=`basename ${VAR2[$PKG_IDX]}`
 		source $SCR_TO_SOURCE
 		sync
