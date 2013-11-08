@@ -213,6 +213,8 @@ function main_menu {
 }
 
 resize
+#Disable screen blanking
+echo -e '\033[9;0]\033[14;0]' > `tty`
 while [ 1 ]; do
 	main_menu
 done
